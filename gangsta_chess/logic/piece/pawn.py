@@ -8,16 +8,12 @@ class Pawn(Piece):
 
     # TODO implement capture
 
-    def get_valid_moves(self):
+    def find_valid_moves(self):
         if self.is_first_move:
             self.is_first_move = False
             self.valid_moves = np.array([(self.pos[0], self.pos[1] + 1),
-                                        (self.pos[0], self.pos[1] + 2)])
+                                         (self.pos[0], self.pos[1] + 2)])
         else:
             self.valid_moves = np.array([(self.pos[0], self.pos[1] + 1)])
-
-
-
-
 
 

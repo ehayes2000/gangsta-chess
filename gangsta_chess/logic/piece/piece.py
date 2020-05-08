@@ -5,6 +5,7 @@ class Piece:
         self.pos = pos
         self.is_captured = False
         self.valid_moves = None
+        self.team = "W"
 
     def move(self, pos):
         if pos not in self.valid_moves:
@@ -14,5 +15,10 @@ class Piece:
             return True
 
     def get_valid_moves(self):
+        if not self.valid_moves:
+            self.find_valid_moves()
+        return self.valid_moves
+
+    def find_valid_moves(self):
         pass
 
