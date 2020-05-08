@@ -2,18 +2,26 @@ from gangsta_chess.logic.piece.piece import *
 
 
 class Pawn(Piece):
-    def __init__(self, pos):
-        super().__init__(pos)
+    def __init__(self, pos, team, Board):
+        super().__init__(pos, team, Board)
         self.is_first_move = True
 
-    # TODO implement capture
-
     def find_valid_moves(self):
+        self.valid_moves = np.array([], dtype=int)
         if self.is_first_move:
-            self.is_first_move = False
-            self.valid_moves = np.array([(self.pos[0], self.pos[1] + 1),
-                                         (self.pos[0], self.pos[1] + 2)])
+            self.move_up_down(2, self.relative_dir)
         else:
-            self.valid_moves = np.array([(self.pos[0], self.pos[1] + 1)])
+            self.move_up_down(1, self.relative_dir)
+
+        for i in range(len(self.valid_moves)):
+            try:
+                if self.board.board[tuple(self.valid_moves[i])].team == self.team:
+                    self.valid_moves = np.delete(self.valid_moves, i)
+            except AttributeError:
+                continue
+
+
+
+
 
 
