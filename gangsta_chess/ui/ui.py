@@ -5,171 +5,177 @@
 #  in conjunction with Tcl version 8.6
 #    May 07, 2020 08:54:31 PM MDT  platform: Linux
 
+import os
 import sys
 import tkinter.ttk as ttk
 import gangsta_chess.ui.ui_support as ui_support
 import tkinter as tk
+from PIL import Image, ImageTk
+
 py3 = True
 w = None
+
+
+def create_image(image_file, width, height):
+    img = Image.open(image_file)
+    img = img.resize((height, width), Image.ANTIALIAS)
+    return ImageTk.PhotoImage(img)
 
 
 class Top:
     def __init__(self, top=None):
         """This class configures and populates the toplevel window.
            top is the toplevel containing window."""
-        _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
-        _fgcolor = '#000000'  # X11 color: 'black'
-        _compcolor = '#d9d9d9' # X11 color: 'gray85'
-        _ana1color = '#d9d9d9' # X11 color: 'gray85'
-        _ana2color = '#ececec' # Closest X11 color: 'gray92'
+
+        width = 750
+        height = 500
+
+        bg_color = "#233342"
+        fg_color = "#233342"
+        character_color = "#ce8054"
+        info_color = "#b35340"
+
         font12 = "-family {Noto Sans Display} -size 15"
         font14 = "-family {Noto Sans Display} -size 11"
-        self.style = ttk.Style()
-        if sys.platform == "win32":
-            self.style.theme_use('winnative')
-        self.style.configure('.', background=_bgcolor)
-        self.style.configure('.', foreground=_fgcolor)
-        self.style.configure('.', font="TkDefaultFont")
-        self.style.map('.', background=
-            [('selected', _compcolor), ('active',_ana2color)])
 
-        top.geometry("750x500")
+        dirname = os.path.dirname(__file__)
+        bg_image = create_image(
+            image_file=os.path.join(dirname, 'resources/board.png'),
+            width=500,
+            height=500
+        )
+        root.bg_image = bg_image  # Prevents garbage collection
+        settings_image = create_image(
+            image_file=os.path.join(dirname, 'resources/settings.png'),
+            width=25,
+            height=25
+        )
+        root.settings_image = settings_image  # Prevents garbage collection
+        analyze_image = create_image(
+            image_file=os.path.join(dirname, 'resources/analyze.png'),
+            width=25,
+            height=25
+        )
+        root.analyze_image = analyze_image  # Prevents garbage collection
+        forward_image = create_image(
+            image_file=os.path.join(dirname, 'resources/forward.png'),
+            width=25,
+            height=25
+        )
+        root.forward_image = forward_image  # Prevents garbage collection
+        backward_image = create_image(
+            image_file=os.path.join(dirname, 'resources/backward.png'),
+            width=25,
+            height=25
+        )
+        root.backward_image = backward_image  # Prevents garbage collection
+
+        top.geometry("%dx%d" % (width, height))
         top.minsize(1, 1)
         top.maxsize(3825, 1050)
         top.resizable(1, 1)
-        top.title("Chess Gangsta")
+        top.title("Gangsta Chess")
+
+        x = root.winfo_screenwidth() / 2 - width / 2
+        y = root.winfo_screenheight() / 2 - height / 2
+        top.geometry("+%d+%d" % (x, y))
+
+        root.resizable(False, False)    # TODO Add resizability
+        # root.configure(background=bg_color)
 
         self.board = tk.Canvas(top)
         self.board.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=0.667)
-        self.board.configure(borderwidth="2")
-        self.board.configure(cursor="fleur")
         self.board.configure(relief="ridge")
-        self.board.configure(selectbackground="#c4c4c4")
-        self.board.configure(takefocus="0")
+        self.board.configure(cursor='man')
+        self.board.create_image(0, 0, image=bg_image, anchor='nw')
+
+        self.info = tk.Canvas(top)
+        self.info.place(relx=0.68, rely=0.06, relheight=0.88, relwidth=0.315)
+        self.info.configure(borderwidth="2")
+        self.info.configure(relief="ridge")
+        self.info.configure(selectbackground=fg_color)
 
         self.settings = tk.Button(top)
         self.settings.place(relx=0.933, rely=0.12, height=35, width=35)
-        self.settings.configure(takefocus="0")
+        self.settings.configure(image=settings_image)
 
         self.analyze = tk.Button(top)
         self.analyze.place(relx=0.707, rely=0.8, height=35, width=45)
-        self.analyze.configure(takefocus="0")
-
-        self.play = tk.Button(top)
-        self.play.place(relx=0.773, rely=0.8, height=35, width=45)
-        self.play.configure(takefocus="0")
-
-        self.TSeparator1 = ttk.Separator(top)
-        self.TSeparator1.place(relx=0.68, rely=0.006, relheight=0.99)
-        self.TSeparator1.configure(orient="vertical")
-        self.TSeparator1.configure(takefocus="0")
-
-        self.menubar = tk.Menu(top,font="TkMenuFont",bg=_bgcolor,fg=_fgcolor)
-        top.configure(menu=self.menubar)
-
-        self.TSeparator2 = ttk.Separator(top)
-        self.TSeparator2.place(relx=0.987, rely=0.004, relheight=0.992)
-        self.TSeparator2.configure(orient="vertical")
-        self.TSeparator2.configure(takefocus="0")
-        self.TSeparator2.configure(cursor="fleur")
-
-        self.TSeparator3 = ttk.Separator(top)
-        self.TSeparator3.place(relx=0.68, rely=0.004, relwidth=0.307)
-        self.TSeparator3.configure(takefocus="0")
-        self.TSeparator3.configure(cursor="fleur")
-
-        self.TSeparator4 = ttk.Separator(top)
-        self.TSeparator4.place(relx=0.68, rely=0.996, relwidth=0.307)
-        self.TSeparator4.configure(takefocus="0")
+        self.analyze.configure(image=analyze_image)
 
         self.backward = tk.Button(top)
         self.backward.place(relx=0.84, rely=0.8, height=35, width=45)
-        self.backward.configure(takefocus="0")
+        self.backward.configure(image=backward_image)
 
         self.forward = tk.Button(top)
         self.forward.place(relx=0.907, rely=0.8, height=35, width=45)
-        self.forward.configure(takefocus="0")
+        self.forward.configure(image=forward_image)
 
         self.player_frame = tk.Frame(top)
         self.player_frame.place(relx=0.693, rely=0.89, relheight=0.09, relwidth=0.288)
         self.player_frame.configure(relief='groove')
         self.player_frame.configure(borderwidth="2")
-        self.player_frame.configure(relief="groove")
-        self.player_frame.configure(cursor="fleur")
+        self.player_frame.configure(cursor='pirate')
 
         self.player_label = tk.Label(self.player_frame)
         self.player_label.place(relx=0.065, rely=0.222, height=25, width=130)
-        self.player_label.configure(activebackground="#f9f9f9")
         self.player_label.configure(anchor='w')
         self.player_label.configure(font="-family {Noto Sans Display} -size 18")
         self.player_label.configure(justify='left')
         self.player_label.configure(text='''Player''')
+        self.player_label.configure(foreground=character_color)
 
         self.player_time = tk.Label(self.player_frame)
         self.player_time.place(relx=0.741, rely=0.222, height=25, width=50)
-        self.player_time.configure(activebackground="#f9f9f9")
         self.player_time.configure(font="-family {Noto Sans Display} -size 18")
         self.player_time.configure(text='''5:00''')
+        self.player_time.configure(foreground=character_color)
 
         self.ai_frame = tk.Frame(top)
         self.ai_frame.place(relx=0.693, rely=0.02, relheight=0.09, relwidth=0.288)
         self.ai_frame.configure(relief='groove')
         self.ai_frame.configure(borderwidth="2")
-        self.ai_frame.configure(relief="groove")
-        self.ai_frame.configure(cursor="fleur")
+        self.ai_frame.configure(cursor='heart')
 
         self.ai_label = tk.Label(self.ai_frame)
         self.ai_label.place(relx=0.046, rely=0.111, height=35, width=140)
-        self.ai_label.configure(activebackground="#f9f9f9")
         self.ai_label.configure(anchor='w')
         self.ai_label.configure(font=font12)
         self.ai_label.configure(justify='left')
         self.ai_label.configure(text='''Chess Gangsta''')
+        self.ai_label.configure(foreground=character_color)
 
         self.ai_time = tk.Label(self.ai_frame)
         self.ai_time.place(relx=0.741, rely=0.222, height=25, width=50)
         self.ai_time.configure(activebackground="#f9f9f9")
         self.ai_time.configure(font="-family {Noto Sans Display} -size 18")
         self.ai_time.configure(text='''5:00''')
+        self.ai_time.configure(foreground=character_color)
 
         self.move_history_label = tk.Label(top)
         self.move_history_label.place(relx=0.693, rely=0.136, height=27, width=175)
         self.move_history_label.configure(anchor='sw')
         self.move_history_label.configure(font=font12)
         self.move_history_label.configure(text='''Move History''')
+        self.move_history_label.configure(foreground=info_color)
 
         self.move_history = tk.Listbox(top)
         self.move_history.place(relx=0.693, rely=0.196, relheight=0.6, relwidth=0.285)
-        self.move_history.configure(background="white")
+        self.move_history.configure(background=fg_color)
         self.move_history.configure(font=font14)
         self.move_history.configure(takefocus="0")
 
 
-def vp_start_gui():
+def display():
     """Starting point when module is the main routine."""
     global val, w, root
     root = tk.Tk()
-    top = Top (root)
+    top = Top(root)
     ui_support.init(root, top)
     root.mainloop()
-
-
-def create_top(rt, *args, **kwargs):
-    """Starting point when module is imported by another module.
-       Correct form of call: 'create_top(root, *args, **kwargs)' ."""
-    global w, w_win, root
-    root = rt
-    w = tk.Toplevel (root)
-    top = Top (w)
-    ui_support.init(w, top, *args, **kwargs)
-    return (w, top)
 
 
 def destroy_top():
     global w
     w.destroy()
     w = None
-
-
-if __name__ == '__main__':
-    vp_start_gui()
