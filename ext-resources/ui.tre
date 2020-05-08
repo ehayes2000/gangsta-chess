@@ -1,0 +1,31 @@
+PAGE
+    Toplevel: Chess_Gangsta
+        Canvas: board  
+        Button: settings  
+        Button: analyze  
+        Button: play  
+        TSeparator: TSeparator1  
+        Menu Bar
+        TSeparator: TSeparator2  
+        TSeparator: TSeparator3  
+        TSeparator: TSeparator4  locked
+        Button: backward  
+        Button: forward  
+        Frame: player_frame  
+            Label: player_label  
+            Label: player_time  
+        Frame: ai_frame  
+            Label: ai_label  
+            Label: ai_time  
+        Scrolledlistbox: Scrolledlistbox1  
+            Listbox: move_history  
+        Label: move_history_label  
+         bind: <Leave> to {.top43.vTH_n configure -bg #000000} bind: <Enter> to {.top43.vTH_n configure -bg red; set vTcl(h,entered) n} bind: <ButtonRelease-1> to {vTcl:grab_release %W} bind: <Button-1> to {vTcl:grab %W %X %Y} bind: <B1-Motion> to {vTcl:grab_resize %X %Y n} bind: <Control-B1-Motion> to {vTcl:grab_resize_ctrl %X %Y n}
+         bind: <Leave> to {.top43.vTH_s configure -bg #000000} bind: <Enter> to {.top43.vTH_s configure -bg red; set vTcl(h,entered) s} bind: <ButtonRelease-1> to {vTcl:grab_release %W} bind: <Button-1> to {vTcl:grab %W %X %Y} bind: <B1-Motion> to {vTcl:grab_resize %X %Y s} bind: <Control-B1-Motion> to {vTcl:grab_resize_ctrl %X %Y s}
+         bind: <Leave> to {.top43.vTH_e configure -bg #000000} bind: <Enter> to {.top43.vTH_e configure -bg red; set vTcl(h,entered) e} bind: <ButtonRelease-1> to {vTcl:grab_release %W} bind: <Button-1> to {vTcl:grab %W %X %Y} bind: <B1-Motion> to {vTcl:grab_resize %X %Y e} bind: <Control-B1-Motion> to {vTcl:grab_resize_ctrl %X %Y e}
+         bind: <Leave> to {.top43.vTH_w configure -bg #000000} bind: <Enter> to {.top43.vTH_w configure -bg red; set vTcl(h,entered) w} bind: <ButtonRelease-1> to {vTcl:grab_release %W} bind: <Button-1> to {vTcl:grab %W %X %Y} bind: <B1-Motion> to {vTcl:grab_resize %X %Y w} bind: <Control-B1-Motion> to {vTcl:grab_resize_ctrl %X %Y w}
+         bind: <Leave> to {.top43.vTH_nw configure -bg #000000} bind: <Enter> to {.top43.vTH_nw configure -bg red; set vTcl(h,entered) nw} bind: <ButtonRelease-1> to {vTcl:grab_release %W} bind: <Button-1> to {vTcl:grab %W %X %Y} bind: <B1-Motion> to {vTcl:grab_resize %X %Y nw} bind: <Control-B1-Motion> to {vTcl:grab_resize_ctrl %X %Y nw}
+         bind: <Leave> to {.top43.vTH_ne configure -bg #000000} bind: <Enter> to {.top43.vTH_ne configure -bg red; set vTcl(h,entered) ne} bind: <ButtonRelease-1> to {vTcl:grab_release %W} bind: <Button-1> to {vTcl:grab %W %X %Y} bind: <B1-Motion> to {vTcl:grab_resize %X %Y ne} bind: <Control-B1-Motion> to {vTcl:grab_resize_ctrl %X %Y ne}
+         bind: <Leave> to {.top43.vTH_sw configure -bg #000000} bind: <Enter> to {.top43.vTH_sw configure -bg red; set vTcl(h,entered) sw} bind: <ButtonRelease-1> to {vTcl:grab_release %W} bind: <Button-1> to {vTcl:grab %W %X %Y} bind: <B1-Motion> to {vTcl:grab_resize %X %Y sw} bind: <Control-B1-Motion> to {vTcl:grab_resize_ctrl %X %Y sw}
+         bind: <Leave> to {.top43.vTH_se configure -bg #000000} bind: <Enter> to {.top43.vTH_se configure -bg red; set vTcl(h,entered) se} bind: <ButtonRelease-1> to {vTcl:grab_release %W} bind: <Button-1> to {vTcl:grab %W %X %Y} bind: <B1-Motion> to {vTcl:grab_resize %X %Y se} bind: <Control-B1-Motion> to {vTcl:grab_resize_ctrl %X %Y se}
+
