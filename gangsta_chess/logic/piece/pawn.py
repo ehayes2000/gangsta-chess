@@ -1,4 +1,4 @@
-from piece import *
+from gangsta_chess.logic.piece.piece import *
 
 
 class Pawn(Piece):
