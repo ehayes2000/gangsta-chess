@@ -157,7 +157,7 @@ class Top:
         self.move_history_label.configure(anchor='sw')
         self.move_history_label.configure(font=font12)
         self.move_history_label.configure(text='''Move History''')
-        self.move_history_label.configure(foreground=info_color)
+        self.move_history_label.configure(foreground=character_color)
 
         self.move_history = tk.Listbox(top)
         self.move_history.place(relx=0.693, rely=0.196, relheight=0.6, relwidth=0.285)
