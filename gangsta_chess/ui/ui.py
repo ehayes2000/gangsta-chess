@@ -30,7 +30,7 @@ class Top:
         width = 750
         height = 500
 
-        bg_color = "#233342"
+        bg_color = "#141a21"
         fg_color = "#233342"
         character_color = "#ce8054"
         info_color = "#b35340"
@@ -81,10 +81,10 @@ class Top:
         top.geometry("+%d+%d" % (x, y))
 
         root.resizable(False, False)    # TODO Add resizability
-        # root.configure(background=bg_color)
+        root.configure(background=bg_color)
 
         self.board = tk.Canvas(top)
-        self.board.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=0.667)
+        self.board.place(relx=0.01, rely=0.01, relheight=0.98, relwidth=0.666)
         self.board.configure(relief="ridge")
         self.board.configure(cursor='man')
         self.board.create_image(0, 0, image=bg_image, anchor='nw')
