@@ -5,20 +5,20 @@ class Pawn(Piece):
     def __init__(self, pos, team, Board):
         super().__init__(pos, team, Board)
         self.is_first_move = True
+        self.relative_dir = 1 if self.team == 'w' else -1
 
     def find_valid_moves(self):
-        self.valid_moves = np.array([], dtype=int)
+        super().find_valid_moves()
         if self.is_first_move:
-            self.move_up_down(2, self.relative_dir)
+            self._calculate_valid_moves([self.relative_dir, 0], 2)
         else:
-            self.move_up_down(1, self.relative_dir)
+            self._calculate_valid_moves([self.relative_dir, 0], 1)
 
-        for i in range(len(self.valid_moves)):
-            try:
-                if self.board.board[tuple(self.valid_moves[i])].team == self.team:
-                    self.valid_moves = np.delete(self.valid_moves, i)
-            except AttributeError:
-                continue
+        self._calculate_valid_moves([self.relative_dir, 1], 1, True)
+        self._calculate_valid_moves([self.relative_dir, -1], 1, True)
+
+
+
 
 
 

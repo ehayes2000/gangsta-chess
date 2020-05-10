@@ -9,24 +9,45 @@ class Piece:
                                 # is the moves that can be taken in one direction
         self.team = team
         self.board = Board
-        self.relative_dir = 1 if self.team == 'w' else -1
 
-    def move_up_down(self, dist, dir=1):
-        temp_pos = np.array(self.pos)
+
+    def _in_range(self, move):
+        if move[0] < 0 or move[1] < 0:
+            return False
+        if move[0] >= self.board.board[:, 0].size or move[1] >= self.board.board[0, :].size:
+            return False
+        return True
+
+    def _calculate_valid_moves(self, step, dist=999, capture=False):
+        current_move = np.array([np.array(self.pos)])
         for i in range(dist):
-            temp_pos[0] += dir
-            try:
-                if not self.board.board[tuple(temp_pos)]:
-                    self.valid_moves = np.concatenate((self.valid_moves, temp_pos))
-                elif self.board.board[tuple(temp_pos)].team != self.team:
-                    self.valid_moves = np.concatenate((self.valid_moves, temp_pos))
-                    break
-                else:
-                    break
-            except IndexError:
-                break
-        self.valid_moves = self.valid_moves.reshape((int(len(self.valid_moves) / 2), 2))
+            current_move += np.array([step])
 
+            if not self._in_range(current_move[0]):
+                break
+
+            elif not self.board.board[tuple(current_move[0])]:
+                if capture:
+                    continue
+                self.valid_moves = np.append(self.valid_moves, current_move, axis=0)
+            elif self.board.board[tuple(current_move[0])].team != self.team:
+                self.valid_moves = np.append(self.valid_moves, current_move, axis=0)
+                break
+            else:
+                break
+
+    def move(self, position):
+        # TODO captures
+        for i in self.valid_moves:
+            if tuple(i) == tuple(position):
+                self.board.board[tuple(position)] = self
+                self.board.board[self.pos] = None
+                self.pos = position
+                return True
+        return False
+
+    def find_valid_moves(self):
+        self.valid_moves = np.array([np.array(self.pos)], dtype=int)
 
 
 
