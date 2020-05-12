@@ -14,22 +14,30 @@ class ChessBoard(Board):
         super().__init__(Pieces, shape)
         self.back_row = np.array([Rook, Knight, Bishop, King, Queen, Bishop, Knight, Rook])
         self._place_pieces()
+        self._find_all_valid_moves()
 
     def _place_pieces(self):
-        self.board[0] = np.array([self.back_row[i]((0, i), 'w', self) for i in range(8)])
-        self.board[1] = np.array([Pawn((1, i), 'w', self) for i in range(8)])
-        for i in range(2, 6):
-            self.board[i] = np.array([None for j in range(self.shape[0])])
-        self.board[6] = np.array([Pawn((6, i), 'b', self) for i in range(8)])
-        self.board[7] = np.array([np.flip(self.back_row)[i]((7, i), 'b', self) for i in range(8)])
+        self.pieces = np.concatenate((self.pieces, np.array([self.back_row[i]((0, i), 'w', self) for i in range(8)])))
+        self.pieces = np.concatenate((self.pieces, np.array([Pawn((1, i), 'w', self) for i in range(8)])))
+        self.pieces = np.concatenate((self.pieces, np.array([Pawn((6, i), 'b', self) for i in range(8)])))
+        self.pieces = np.concatenate((self.pieces, np.array([np.flip(self.back_row)[i]((7, i), 'b', self) for i in range(8)])))
+        for piece in self.pieces:
+            self.board[piece.pos].occupied_by = piece
+
+    def _find_all_valid_moves(self):
+        for i in self.pieces:
+            i._find_valid_moves()
 
 
 game = ChessBoard(Piece)
-game.board[1, 2].find_valid_moves()
-p = Bishop((1, 2), 'w', game)
-game.board[1, 2] = p
+bPiece = King((3, 4), 'b', game)
+game.board[3, 4].occupied_by = bPiece
+game.board[3, 4].occupied_by._find_valid_moves()
 
-p.find_valid_moves()
-print(p.valid_moves)
+
+# print(game.board[1, 0].)
+# FIXME anytime any piece moves, all pieces must update valid moves,
+# anytime a piece moves update moves for pieces that could previously move
+# where the piece moved to or from
 
 

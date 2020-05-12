@@ -7,8 +7,8 @@ class Pawn(Piece):
         self.is_first_move = True
         self.relative_dir = 1 if self.team == 'w' else -1
 
-    def find_valid_moves(self):
-        super().find_valid_moves()
+    def _find_valid_moves(self):
+        super()._find_valid_moves()
         if self.is_first_move:
             self._calculate_valid_moves([self.relative_dir, 0], 2)
         else:
@@ -16,7 +16,7 @@ class Pawn(Piece):
 
         self._calculate_valid_moves([self.relative_dir, 1], 1, True)
         self._calculate_valid_moves([self.relative_dir, -1], 1, True)
-
+        super()._update_tiles(True)
 
 
 
