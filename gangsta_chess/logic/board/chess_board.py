@@ -12,24 +12,25 @@ from gangsta_chess.logic.piece.rook import Rook
 class ChessBoard(Board):
     def __init__(self, Pieces, shape=(8, 8)):
         super().__init__(Pieces, shape)
-        self.back_row = np.array([Rook, Knight, Bishop, King, Queen, Bishop, Knight, Rook])
-        self._place_pieces()
+        self.__init_chess_game()
 
-    def _place_pieces(self):
-        self.board[0] = np.array([self.back_row[i]((0, i), 'w', self) for i in range(8)])
-        self.board[1] = np.array([Pawn((1, i), 'w', self) for i in range(8)])
+    def __init_chess_game(self):
+        back_row = np.array([Rook, Knight, Bishop, King, Queen, Bishop, Knight, Rook])
+
+        self.board[0] = np.array([back_row[i]('w', self) for i in range(self.shape[1])])
+        self.board[7] = np.array([np.flip(back_row)[i]('b', self) for i in range(self.shape[1])])
+        self.board[1] = np.array([Pawn('w', self) for i in range(self.shape[1])])
+        self.board[6] = np.array([Pawn('b', self) for i in range(self.shape[1])])
         for i in range(2, 6):
-            self.board[i] = np.array([None for j in range(self.shape[0])])
-        self.board[6] = np.array([Pawn((6, i), 'b', self) for i in range(8)])
-        self.board[7] = np.array([np.flip(self.back_row)[i]((7, i), 'b', self) for i in range(8)])
+            self.board[i] = np.array([None for i in range(self.board.shape[1])])
 
 
 game = ChessBoard(Piece)
-game.board[1, 2].find_valid_moves()
-p = Bishop((1, 2), 'w', game)
-game.board[1, 2] = p
-
-p.find_valid_moves()
-print(p.valid_moves)
-
+pos = (1, 3)
+move = (6, 0)
+game.board[pos].move(move)
+game.board[move].find_valid_moves()
+print(game.board[move].valid_moves)
+print(game.captured_pieces)
+print(game)
 
