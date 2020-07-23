@@ -9,6 +9,8 @@ class Piece:
         self.board = Board
 
     def move(self, pos):
+        if pos not in self.valid_moves:
+            return False
         dest_ = self.board.board[pos]
         # if the destination is a friendly piece we cannot move there
         if dest_ and dest_.team == self.team:

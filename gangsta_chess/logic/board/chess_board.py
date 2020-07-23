@@ -24,13 +24,21 @@ class ChessBoard(Board):
         for i in range(2, 6):
             self.board[i] = np.array([None for i in range(self.board.shape[1])])
 
+        for i in self.board:
+            for j in i:
+                if j:
+                    self.pieces.add(j)
 
 game = ChessBoard(Piece)
-pos = (1, 3)
-move = (6, 0)
-game.board[pos].move(move)
-game.board[move].find_valid_moves()
-print(game.board[move].valid_moves)
-print(game.captured_pieces)
-print(game)
 
+pos = (1, 3)
+move = (5, 0)
+game.board[pos].move(move)
+game.board[pos].find_valid_moves()
+print(game.board[pos].valid_moves)
+# game.board.pos
+# game.board[move].find_valid_moves()
+# print(game.board[move].valid_moves())
+# game.board[6, 1].find_valid_moves()
+# print(game.board[move].in_check())
+print(game)
