@@ -23,3 +23,12 @@ class Board:
             print(end='\n')
         return ''
 
+    # Check position is on chess board
+    def in_range(self, pos):
+        if pos[0] < 0 or pos[1] < 0:
+            return False
+        if pos[0] >= self.board[:, 0].size or pos[1] >= self.board[0, :].size:
+            return False
+        return True
+
+

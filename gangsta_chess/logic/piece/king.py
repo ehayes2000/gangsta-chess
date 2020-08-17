@@ -2,8 +2,8 @@ from gangsta_chess.logic.piece.piece import *
 
 
 class King(Piece):
-    def __init__(self, team, Board):
-        super().__init__(team, Board)
+    def __init__(self, team, pos):
+        super().__init__(team, pos)
         self.in_check_mate = False
 
     def __str__(self):
@@ -23,9 +23,9 @@ class King(Piece):
                 if piece.team != self.team and move in piece.valid_moves:
                     self.valid_moves.remove(move)
 
-    def find_valid_moves(self):
+    def find_valid_moves(self, board):
         super()._find_valid_moves([[1, 0], [-1, 0], [0, 1], [0, -1],
-                                   [1, 1], [1, -1], [-1, -1], [-1, 1]], 1)
+                                   [1, 1], [1, -1], [-1, -1], [-1, 1]], 1, board)
         self._remove_invalid_moves()
         if len(self.valid_moves) == 0 and self.in_check():
             self.in_check_mate = True
