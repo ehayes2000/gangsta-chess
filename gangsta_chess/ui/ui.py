@@ -231,6 +231,10 @@ def get_board():
     return board
 
 
+def get_root():
+    return root
+
+
 def get_square_size():
     return [63, 63]
 
