@@ -5,7 +5,6 @@
 #  in conjunction with Tcl version 8.6
 #    May 07, 2020 08:54:31 PM MDT  platform: Linux
 
-import os
 import sys
 import tkinter.ttk as ttk
 import gangsta_chess.ui.ui_support as ui_support
@@ -14,12 +13,31 @@ from PIL import Image, ImageTk
 
 py3 = True
 w = None
+board = None
+is_playing = False
 
 
-def create_image(image_file, width, height):
+def set_image(button, image_file):
     img = Image.open(image_file)
-    img = img.resize((height, width), Image.ANTIALIAS)
-    return ImageTk.PhotoImage(img)
+    img = img.resize((35, 35), Image.ANTIALIAS)
+    ph = ImageTk.PhotoImage(img)
+    button.configure(image=ph)
+    button.image = ph
+
+
+def get_piece(path):
+    img = Image.open(path)
+    img = img.resize(tuple(get_square_size()), Image.ANTIALIAS)
+    return ImageTk.PhotoImage(image=img)
+
+
+def swap_play_pause(play_button):
+    global is_playing
+    if is_playing:
+        set_image(play_button, "./resources/play.png")
+    else:
+        set_image(play_button, "./resources/pause.png")
+    is_playing = not is_playing
 
 
 class Top:
@@ -37,13 +55,12 @@ class Top:
         self.style.configure('.',background=_bgcolor)
         self.style.configure('.',foreground=_fgcolor)
         self.style.configure('.',font="TkDefaultFont")
-        self.style.map('.',background=
-            [('selected', _compcolor), ('active',_ana2color)])
+        self.style.map('.',background=[('selected', _compcolor), ('active',_ana2color)])
 
         top.geometry("750x500+589+261")
         top.minsize(1, 1)
         top.maxsize(3825, 1050)
-        top.resizable(1, 1)
+        top.resizable(False, False)
         top.title("Chess Gangsta")
         top.configure(background="#222831")
         top.configure(highlightcolor="black")
@@ -55,24 +72,40 @@ class Top:
         self.board.configure(relief="ridge")
         self.board.configure(selectbackground="#c4c4c4")
         self.board.configure(takefocus="0")
+        img = Image.open("./resources/board.png")
+        img = img.resize((500, 500), Image.ANTIALIAS)
+        ph = ImageTk.PhotoImage(img)
+        self.board.image = ph
+        self.board.create_image(250, 250, image=ph)
 
         self.settings = tk.Button(top)
         self.settings.place(relx=0.933, rely=0.12, height=35, width=35)
-        self.settings.configure(activebackground="#f9f9f9")
+        self.settings.configure(activebackground="#3e424B")
         self.settings.configure(background="#30475E")
-        self.settings.configure(takefocus="0")
-
-        self.analyze = tk.Button(top)
-        self.analyze.place(relx=0.707, rely=0.8, height=35, width=45)
-        self.analyze.configure(activebackground="#f9f9f9")
-        self.analyze.configure(background="#30475E")
-        self.analyze.configure(takefocus="0")
+        self.settings.configure(takefocus="v0")
+        set_image(self.settings, "./resources/settings.png")
 
         self.play = tk.Button(top)
-        self.play.place(relx=0.773, rely=0.8, height=35, width=45)
-        self.play.configure(activebackground="#f9f9f9")
+        self.play.place(relx=0.707, rely=0.8, height=35, width=45)
+        self.play.configure(activebackground="#3e424B")
         self.play.configure(background="#30475E")
         self.play.configure(takefocus="0")
+        self.play.configure(command=lambda : swap_play_pause(self.play))
+        set_image(self.play, "./resources/play.png")
+
+        self.backward = tk.Button(top)
+        self.backward.place(relx=0.84, rely=0.8, height=35, width=45)
+        self.backward.configure(activebackground="#3e424B")
+        self.backward.configure(background="#30475E")
+        self.backward.configure(takefocus="0")
+        set_image(self.backward, "./resources/backward.png")
+
+        self.forward = tk.Button(top)
+        self.forward.place(relx=0.907, rely=0.8, height=35, width=45)
+        self.forward.configure(activebackground="#3e424B")
+        self.forward.configure(background="#30475E")
+        self.forward.configure(takefocus="0")
+        set_image(self.forward, "./resources/forward.png")
 
         self.TSeparator1 = ttk.Separator(top)
         self.TSeparator1.place(relx=0.68, rely=0.006, relheight=0.99)
@@ -95,21 +128,8 @@ class Top:
         self.TSeparator4.place(relx=0.68, rely=0.996, relwidth=0.307)
         self.TSeparator4.configure(takefocus="0")
 
-        self.backward = tk.Button(top)
-        self.backward.place(relx=0.84, rely=0.8, height=35, width=45)
-        self.backward.configure(activebackground="#f9f9f9")
-        self.backward.configure(background="#30475E")
-        self.backward.configure(takefocus="0")
-
-        self.forward = tk.Button(top)
-        self.forward.place(relx=0.907, rely=0.8, height=35, width=45)
-        self.forward.configure(activebackground="#f9f9f9")
-        self.forward.configure(background="#30475E")
-        self.forward.configure(takefocus="0")
-
         self.player_frame = tk.Frame(top)
-        self.player_frame.place(relx=0.693, rely=0.89, relheight=0.09
-                , relwidth=0.288)
+        self.player_frame.place(relx=0.693, rely=0.89, relheight=0.09, relwidth=0.288)
         self.player_frame.configure(relief='groove')
         self.player_frame.configure(borderwidth="2")
         self.player_frame.configure(relief="groove")
@@ -117,7 +137,7 @@ class Top:
 
         self.player_label = tk.Label(self.player_frame)
         self.player_label.place(relx=0.065, rely=0.222, height=25, width=130)
-        self.player_label.configure(activebackground="#f9f9f9")
+        self.player_label.configure(activebackground="#3e424B")
         self.player_label.configure(anchor='w')
         self.player_label.configure(background="#30475E")
         self.player_label.configure(font="-family {Noto Sans Display} -size 18")
@@ -127,15 +147,14 @@ class Top:
 
         self.player_time = tk.Label(self.player_frame)
         self.player_time.place(relx=0.741, rely=0.222, height=25, width=50)
-        self.player_time.configure(activebackground="#f9f9f9")
+        self.player_time.configure(activebackground="#3e424B")
         self.player_time.configure(background="#30475E")
         self.player_time.configure(font="-family {Noto Sans Display} -size 18")
         self.player_time.configure(foreground="#ECECEC")
         self.player_time.configure(text='''5:00''')
 
         self.ai_frame = tk.Frame(top)
-        self.ai_frame.place(relx=0.693, rely=0.02, relheight=0.09
-                , relwidth=0.288)
+        self.ai_frame.place(relx=0.693, rely=0.02, relheight=0.09, relwidth=0.288)
         self.ai_frame.configure(relief='groove')
         self.ai_frame.configure(borderwidth="2")
         self.ai_frame.configure(relief="groove")
@@ -143,7 +162,7 @@ class Top:
 
         self.ai_label = tk.Label(self.ai_frame)
         self.ai_label.place(relx=0.046, rely=0.111, height=35, width=140)
-        self.ai_label.configure(activebackground="#f9f9f9")
+        self.ai_label.configure(activebackground="#3e424B")
         self.ai_label.configure(anchor='w')
         self.ai_label.configure(background="#30475E")
         self.ai_label.configure(font="-family {Noto Sans Display} -size 15")
@@ -153,16 +172,15 @@ class Top:
 
         self.ai_time = tk.Label(self.ai_frame)
         self.ai_time.place(relx=0.741, rely=0.222, height=25, width=50)
-        self.ai_time.configure(activebackground="#f9f9f9")
+        self.ai_time.configure(activebackground="#3e424B")
         self.ai_time.configure(background="#30475E")
         self.ai_time.configure(font="-family {Noto Sans Display} -size 18")
         self.ai_time.configure(foreground="#ECECEC")
         self.ai_time.configure(text='''5:00''')
 
         self.move_history_label = tk.Label(top)
-        self.move_history_label.place(relx=0.693, rely=0.136, height=27
-                , width=175)
-        self.move_history_label.configure(activebackground="#f9f9f9")
+        self.move_history_label.place(relx=0.693, rely=0.136, height=27, width=175)
+        self.move_history_label.configure(activebackground="#3e424B")
         self.move_history_label.configure(anchor='sw')
         self.move_history_label.configure(background="#222831")
         self.move_history_label.configure(font="-family {Noto Sans Display} -size 15")
@@ -170,8 +188,7 @@ class Top:
         self.move_history_label.configure(text='''Move History''')
 
         self.move_history = tk.Listbox(top)
-        self.move_history.place(relx=0.693, rely=0.196, relheight=0.6
-                , relwidth=0.285)
+        self.move_history.place(relx=0.693, rely=0.196, relheight=0.6, relwidth=0.285)
         self.move_history.configure(background="#30475E")
         self.move_history.configure(font="-family {Noto Sans Display} -size 11")
         self.move_history.configure(foreground="#ECECEC")
@@ -180,13 +197,25 @@ class Top:
         self.move_history.configure(takefocus="0")
 
 
-def display():
+def initialize():
     """Starting point when module is the main routine."""
-    global val, w, root
+    global val, w, root, board
     root = tk.Tk()
     top = Top(root)
+    board = top.board
     ui_support.init(root, top)
+
+
+def display():
     root.mainloop()
+
+
+def get_board():
+    return board
+
+
+def get_square_size():
+    return [63, 63]
 
 
 def destroy_top():
