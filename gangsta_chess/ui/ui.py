@@ -18,7 +18,7 @@ board = None
 is_playing = False
 
 
-def set_image(button, image_file):
+def _set_image(button, image_file):
     img = Image.open(image_file)
     img = img.resize((35, 35), Image.ANTIALIAS)
     ph = ImageTk.PhotoImage(img)
@@ -26,33 +26,33 @@ def set_image(button, image_file):
     button.image = ph
 
 
-def get_piece(path):
+def _get_piece(path):
     img = Image.open(path)
     img = img.resize(tuple(get_square_size()), Image.ANTIALIAS)
     return ImageTk.PhotoImage(image=img)
 
 
 def _add_pieces(cur_board):
-    cur_board.w_king = get_piece("./resources/pieces/w_king.png")
-    cur_board.w_queen = get_piece("./resources/pieces/w_queen.png")
-    cur_board.w_bishop = get_piece("./resources/pieces/w_bishop.png")
-    cur_board.w_knight = get_piece("./resources/pieces/w_knight.png")
-    cur_board.w_rook = get_piece("./resources/pieces/w_rook.png")
-    cur_board.w_pawn = get_piece("./resources/pieces/w_pawn.png")
-    cur_board.b_king = get_piece("./resources/pieces/b_king.png")
-    cur_board.b_queen = get_piece("./resources/pieces/b_queen.png")
-    cur_board.b_bishop = get_piece("./resources/pieces/b_bishop.png")
-    cur_board.b_knight = get_piece("./resources/pieces/b_knight.png")
-    cur_board.b_rook = get_piece("./resources/pieces/b_rook.png")
-    cur_board.b_pawn = get_piece("./resources/pieces/b_pawn.png")
+    cur_board.w_king = _get_piece("./resources/pieces/w_king.png")
+    cur_board.w_queen = _get_piece("./resources/pieces/w_queen.png")
+    cur_board.w_bishop = _get_piece("./resources/pieces/w_bishop.png")
+    cur_board.w_knight = _get_piece("./resources/pieces/w_knight.png")
+    cur_board.w_rook = _get_piece("./resources/pieces/w_rook.png")
+    cur_board.w_pawn = _get_piece("./resources/pieces/w_pawn.png")
+    cur_board.b_king = _get_piece("./resources/pieces/b_king.png")
+    cur_board.b_queen = _get_piece("./resources/pieces/b_queen.png")
+    cur_board.b_bishop = _get_piece("./resources/pieces/b_bishop.png")
+    cur_board.b_knight = _get_piece("./resources/pieces/b_knight.png")
+    cur_board.b_rook = _get_piece("./resources/pieces/b_rook.png")
+    cur_board.b_pawn = _get_piece("./resources/pieces/b_pawn.png")
 
 
-def swap_play_pause(play_button):
+def _swap_play_pause(play_button):
     global is_playing
     if is_playing:
-        set_image(play_button, "./resources/play.png")
+        _set_image(play_button, "./resources/play.png")
     else:
-        set_image(play_button, "./resources/pause.png")
+        _set_image(play_button, "./resources/pause.png")
     is_playing = not is_playing
 
 
@@ -99,29 +99,29 @@ class Top:
         self.settings.configure(activebackground="#3e424B")
         self.settings.configure(background="#30475E")
         self.settings.configure(takefocus="v0")
-        set_image(self.settings, "./resources/settings.png")
+        _set_image(self.settings, "./resources/settings.png")
 
         self.play = tk.Button(top)
         self.play.place(relx=0.707, rely=0.8, height=35, width=45)
         self.play.configure(activebackground="#3e424B")
         self.play.configure(background="#30475E")
         self.play.configure(takefocus="0")
-        self.play.configure(command=lambda : swap_play_pause(self.play))
-        set_image(self.play, "./resources/play.png")
+        self.play.configure(command=lambda : _swap_play_pause(self.play))
+        _set_image(self.play, "./resources/play.png")
 
         self.backward = tk.Button(top)
         self.backward.place(relx=0.84, rely=0.8, height=35, width=45)
         self.backward.configure(activebackground="#3e424B")
         self.backward.configure(background="#30475E")
         self.backward.configure(takefocus="0")
-        set_image(self.backward, "./resources/backward.png")
+        _set_image(self.backward, "./resources/backward.png")
 
         self.forward = tk.Button(top)
         self.forward.place(relx=0.907, rely=0.8, height=35, width=45)
         self.forward.configure(activebackground="#3e424B")
         self.forward.configure(background="#30475E")
         self.forward.configure(takefocus="0")
-        set_image(self.forward, "./resources/forward.png")
+        _set_image(self.forward, "./resources/forward.png")
 
         self.TSeparator1 = ttk.Separator(top)
         self.TSeparator1.place(relx=0.68, rely=0.006, relheight=0.99)
