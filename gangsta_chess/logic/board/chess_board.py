@@ -10,9 +10,12 @@ from gangsta_chess.logic.piece.rook import Rook
 
 
 class ChessBoard(Board):
-    def __init__(self, Pieces, shape=(8, 8)):
-        super().__init__(Pieces, shape)
+    def __init__(self, pieces, shape=(8, 8)):
+        super().__init__(pieces, shape)
         self.__init_chess_game()
+        self.blocking = {blocking : (piece, dir)}
+        self.can_move = {move : [piece_1, piece_2], move_2 : [piece_1, piece_2]}
+
 
     def __init_chess_game(self):
         back_row = np.array([Rook, Knight, Bishop, King, Queen, Bishop, Knight, Rook])
@@ -44,15 +47,44 @@ class ChessBoard(Board):
         # move the piece
         self.board[piece_pos] = None
         self.board[dest_pos] = piece
+        piece.pos = dest_pos
         return True
+
+    # find valid move of every piece
+    def find_all_valid_moves(self):
+        kings = []
+        # find valid move of every piece if it is not a king
+        for piece in self.pieces:
+            if not isinstance(piece, King):
+                piece.find_valid_moves(self)
+            else:
+                kings.append(piece)
+        # the kings valid moves must be found last because they are dependent on other valid moves
+        kings[0].find_valid_moves(self)
+        kings[1].find_valid_moves(self)
+
 
 
 game = ChessBoard(Piece)
-print(game)
+
 pos = (1, 3)
 move = (2, 3)
 game.board[pos].find_valid_moves(game)
 game.move(pos, move)
-# print(game.board[pos].move(move))
+
+k = King('w', (4, 3))
+r = Rook('b', (4, 7))
+game.board[4, 3] = k
+game.board[4, 7] = r
+game.pieces.add(r)
+game.pieces.add(k)
+
+# TODO board should find all valid moves of every piece
+game.find_all_valid_moves()
+k.find_valid_moves(game)
+print(k.in_check(game))
+print(k.valid_moves)
+
+print(k.in_check_mate)
 print(game)
 

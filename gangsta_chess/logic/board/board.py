@@ -2,9 +2,9 @@ import numpy as np
 
 
 class Board:
-    def __init__(self, Pieces, shape):
+    def __init__(self, pieces, shape):
         self.shape = shape
-        self.board = np.empty(shape, dtype=Pieces)
+        self.board = np.empty(shape, dtype=pieces)
         self.pieces = set([])
         self.captured_pieces = set([])
 
@@ -30,5 +30,6 @@ class Board:
         if pos[0] >= self.board[:, 0].size or pos[1] >= self.board[0, :].size:
             return False
         return True
+
 
 
