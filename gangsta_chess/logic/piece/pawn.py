@@ -2,8 +2,8 @@ from gangsta_chess.logic.piece.piece import *
 
 
 class Pawn(Piece):
-    def __init__(self, team, pos):
-        super().__init__(team, pos)
+    def __init__(self, team):
+        super().__init__(team)
         self.is_first_move = True
         self.relative_dir = 1 if self.team == 'w' else -1
 

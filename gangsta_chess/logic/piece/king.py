@@ -2,8 +2,8 @@ from gangsta_chess.logic.piece.piece import *
 
 
 class King(Piece):
-    def __init__(self, team, pos):
-        super().__init__(team, pos)
+    def __init__(self, team):
+        super().__init__(team)
         self.in_check_mate = False
 
     def __str__(self):

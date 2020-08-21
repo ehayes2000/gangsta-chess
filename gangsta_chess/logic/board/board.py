@@ -2,9 +2,11 @@ import numpy as np
 
 
 class Board:
-    def __init__(self, pieces, shape):
+    def __init__(self, piece_type, shape):
         self.shape = shape
-        self.board = np.empty(shape, dtype=pieces)
+        self.piece_type = piece_type
+
+        # TODO Reevaluate necessity
         self.pieces = set([])
         self.captured_pieces = set([])
 
@@ -22,6 +24,9 @@ class Board:
                     print('□', end='  ')
             print(end='\n')
         return ''
+
+    def place_pieces(self):
+        pass
 
     # Check position is on chess board
     def in_range(self, pos):

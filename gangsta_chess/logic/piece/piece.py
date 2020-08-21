@@ -2,12 +2,6 @@ import numpy as np
 
 
 class Piece:
-    def __init__(self, team, pos):
-        self.is_captured = False
-     #   self.valid_moves = set([])
-        self.valid_moves = {}  # {dir : [moves]}
-        self.team = team
-        self.pos = pos
 
     # *THEORETICAL MOVES* (make no physical changes)
     # 0. Use valid_moves to find list of possible moves
@@ -27,16 +21,74 @@ class Piece:
     # 2. when a pieces is moved, it may block new pieces
     #   update those pieces moves
 
-    # begin game
-    # 1. place pieces by moving them onto board as described above (skip theoretical)
+    # Initialize piece with team and position
+    def __init__(self, team):
+        # INSTANCE
+        self.team = team
 
+        self.pos = None
+        self.is_captured = False
+        self.valid_moves = {}  # {dir : [moves]}
+        self.actual_moves = []
 
-    # on a theoretical move check which pieces are blocked by this piece
-    def _update_pieces_blocked(self, board):
+        # FLAGS
+        self.actual_moves_calculated = False
+        self.move_template_generated = False
+
+    # Generates pieces move template
+    def _generate_move_template(self, steps, distance, board):
+        self.move_template = 0
+        # TODO Generate move template
+        self.move_template_generated = True
+
+    # Returns pieces move template
+    def get_move_template(self):
+        if not self.move_template_generated:
+            raise Exception("Move template requested but not yet generated. Please ensure "
+                            "piece#generate_move_template is called")
+        return self.move_template
+
+    # Calculates moves available
+    def calculate_actual_moves(self, is_in_check):
+        theoretical_moves = []
+        for values in self.valid_moves.values():
+            theoretical_moves.append([value for value in values])
+        actual_moves = []
+        for theoretical_move in theoretical_moves:
+            # Continue if move does not block a currently checked king
+            if not (is_in_check and self.is_blocking_check(theoretical_move)):
+                continue
+            # Continue if piece exposes a check
+            if self.is_exposing_check(theoretical_move):
+                continue
+            # Add theoretical move to actual moves
+            actual_moves.append(theoretical_move)
+        self.actual_moves = actual_moves
+        self.actual_moves_calculated = True
+
+    def get_actual_moves(self):
+        if not self.actual_moves_calculated:
+            raise RuntimeError("Actual moves cannot be retrieved before being calculated with "
+                               "piece#calculate_actual_moves")
+        return self.actual_moves
+
+    # Returns whether or not piece blocks a currently checked king
+    def is_blocking_check(self, destination):
         pass
 
-    # on a theoretical move check which pieces are unblocked by this piece
-    def _update_pieces_unblocked(self, board):
+    # Returns whether or not piece exposes a check
+    def is_exposing_check(self, destination):
+        pass
+
+    def set_position(self, destination):
+        self.pos = destination
+
+    # as a result of moving, check which pieces are blocked by this piece
+    def update_pieces_blocked(self, board):
+        pass
+
+    # as a result of moving, check which pieces are unblocked by this piece
+    def update_pieces_unblocked(self, board):
         for piece in board.pieces:
             if piece.team == self.team:
                 continue
@@ -46,39 +98,42 @@ class Piece:
                     # store modification
                     break
 
+    # Updates piece's flags after a move occurs
+    def update_flags_after_move(self):
+        self.actual_moves_calculated = False
 
-
-    # change valid move directory
-    def _find_valid_moves(self, steps, distance, board):
-        self.valid_moves = set([])
-        for step in steps:
-            # create array with distance number of step values
-            moves_in_dir = np.array([step for i in range(distance)])
-            # cumulative sum the step values to create absolute possible moves
-            moves_in_dir = np.cumsum(moves_in_dir, axis=0)
-            # center the array around the piece's current location
-            moves_in_dir = np.array(self.pos).flatten() + moves_in_dir
-            for i in range(len(moves_in_dir)):
-                # Break out if current location is off the board
-                if not board.in_range(moves_in_dir[i]):
-                    moves_in_dir = moves_in_dir[:i]
-                    break
-                # Continue if board location is not occupied
-                if not board.board[tuple(moves_in_dir[i])]:
-                    continue
-                # Break out after adding current move due to collision with enemy
-                elif board.board[tuple(moves_in_dir[i])].team != self.team:
-                    moves_in_dir = moves_in_dir[:i+1]
-                    break
-                # Break out after adding current move due to collision with teammate
-                elif board.board[tuple(moves_in_dir[i])].team == self.team:
-                    moves_in_dir = moves_in_dir[:i]
-                    break
-                else:
-                    raise RuntimeError("Error! Possible move could not be sorted")
-
-            for valid_pos in moves_in_dir:
-                self.valid_moves.add(tuple(valid_pos))
+    # TODO Steal logic then remove
+    # # change valid move directory
+    # def _find_valid_moves(self, steps, distance, board):
+    #     self.valid_moves = set([])
+    #     for step in steps:
+    #         # create array with distance number of step values
+    #         moves_in_dir = np.array([step for i in range(distance)])
+    #         # cumulative sum the step values to create absolute possible moves
+    #         moves_in_dir = np.cumsum(moves_in_dir, axis=0)
+    #         # center the array around the piece's current location
+    #         moves_in_dir = np.array(self.pos).flatten() + moves_in_dir
+    #         for i in range(len(moves_in_dir)):
+    #             # Break out if current location is off the board
+    #             if not board.in_range(moves_in_dir[i]):
+    #                 moves_in_dir = moves_in_dir[:i]
+    #                 break
+    #             # Continue if board location is not occupied
+    #             if not board.board[tuple(moves_in_dir[i])]:
+    #                 continue
+    #             # Break out after adding current move due to collision with enemy
+    #             elif board.board[tuple(moves_in_dir[i])].team != self.team:
+    #                 moves_in_dir = moves_in_dir[:i+1]
+    #                 break
+    #             # Break out after adding current move due to collision with teammate
+    #             elif board.board[tuple(moves_in_dir[i])].team == self.team:
+    #                 moves_in_dir = moves_in_dir[:i]
+    #                 break
+    #             else:
+    #                 raise RuntimeError("Error! Possible move could not be sorted")
+    #
+    #         for valid_pos in moves_in_dir:
+    #             self.valid_moves.add(tuple(valid_pos))
 
 
 
