@@ -23,6 +23,7 @@ class ChessBoard(Board):
         self.BLACK = 'b'
 
         # Instance
+        self.blocking_pieces = {}       # {blocking : [(piece, dir),(piece, dir)]}
         self.ui = ui
         self.ui_ledger = move_ledger
         self.blocking_pieces = {}       # {blocking : (piece, dir)}
@@ -32,7 +33,8 @@ class ChessBoard(Board):
 
         # FLAGS
         self.pieces_placed = False
-        self.team_check = {self.WHITE: False, self.BLACK: False}
+        self.kings = {self.WHITE: None, self.BLACK: None}
+
 
     # Place pieces on the chess board
     def place_pieces(self):
@@ -51,6 +53,8 @@ class ChessBoard(Board):
         for row in initial_pieces:
             for piece_pos in row:
                 self.move(piece_pos[0], piece_pos[1], force=True)
+                if isinstance(piece_pos[0], King):
+                   self.kings[piece_pos[0].team] = piece_pos[0]
 
     def get_piece_at_position(self, position):
         for piece in self.pieces:
@@ -58,10 +62,16 @@ class ChessBoard(Board):
                 return piece
         return None
 
+    # TODO
     def move(self, piece, destination, force=False):
         if not force:
             if not piece.actual_moves_calculated:
-                piece.calculate_actual_moves(self.team_check[piece.team])
+                try:
+                    blocking_pieces = self.blocking_pieces[piece]
+                except KeyError:
+                    blocking_pieces = None
+                # FIXME function call will change
+                piece.calculate_actual_moves(self.kings[piece.team].in_check, blocking_pieces, self.reachable_positions, )
             if destination not in piece.get_actual_moves():
                 raise Exception(f"The {piece} cannot move to {destination}")
 
@@ -145,7 +155,7 @@ game.pieces.add(k)
 game.find_all_valid_moves()
 k.find_valid_moves(game)
 print(k.in_check(game))
-print(k.valid_moves)
+print(k.theoretical_moves)
 
 print(k.in_check_mate)
 print(game)

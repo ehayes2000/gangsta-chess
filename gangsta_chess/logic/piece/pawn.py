@@ -15,11 +15,11 @@ class Pawn(Piece):
         step = [self.relative_dir, 0]
         if not self.is_first_move:
             if board.in_range(pos + step) and not board.board[tuple(pos + step)]:
-                self.valid_moves.add(tuple(pos + step))
+                self.theoretical_moves.add(tuple(pos + step))
         else:
             for i in range(2):
                 if board.in_range(pos + step) and not board.board[tuple(pos + step)]:
-                    self.valid_moves.add(tuple(pos + step))
+                    self.theoretical_moves.add(tuple(pos + step))
                     pos = pos + step
                 else:
                     break
@@ -30,7 +30,7 @@ class Pawn(Piece):
         for step in steps:
             if board.in_range(pos + step) and board.board[tuple(pos + step)]:
                 if board.board[tuple(pos + step)].team != self.team:
-                    self.valid_moves.add(tuple(pos + step))
+                    self.theoretical_moves.add(tuple(pos + step))
 
     def find_valid_moves(self, board):
         self._find_pawn_moves(board)
