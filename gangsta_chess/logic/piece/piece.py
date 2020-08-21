@@ -22,31 +22,19 @@ class Piece:
     #   update those pieces moves
 
     # Initialize piece with team and position
-    def __init__(self, team):
+    def __init__(self, team, move_template):
         # INSTANCE
         self.team = team
 
         self.pos = None
         self.is_captured = False
-        self.valid_moves = {}  # {dir : [moves]}
+        self.valid_moves = {}               # {dir : [moves]} theoretical
+        self.move_template = move_template
         self.actual_moves = []
 
         # FLAGS
         self.actual_moves_calculated = False
         self.move_template_generated = False
-
-    # Generates pieces move template
-    def _generate_move_template(self, steps, distance, board):
-        self.move_template = 0
-        # TODO Generate move template
-        self.move_template_generated = True
-
-    # Returns pieces move template
-    def get_move_template(self):
-        if not self.move_template_generated:
-            raise Exception("Move template requested but not yet generated. Please ensure "
-                            "piece#generate_move_template is called")
-        return self.move_template
 
     # Calculates moves available
     def calculate_actual_moves(self, is_in_check):
@@ -68,8 +56,7 @@ class Piece:
 
     def get_actual_moves(self):
         if not self.actual_moves_calculated:
-            raise RuntimeError("Actual moves cannot be retrieved before being calculated with "
-                               "piece#calculate_actual_moves")
+            raise Exception("Actual moves cannot be retrieved before being calculated with piece#calculate_actual_moves")
         return self.actual_moves
 
     # Returns whether or not piece blocks a currently checked king

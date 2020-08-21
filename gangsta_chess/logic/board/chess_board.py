@@ -14,7 +14,7 @@ class ChessBoard(Board):
     # *BEGIN GAME*
     # 1. place pieces by moving them onto board (skip theoretical)
 
-    def __init__(self, shape=(8, 8)):
+    def __init__(self, shape=(8, 8), ui=None, move_ledger=None):
         super().__init__(Piece, shape)
 
         # GLOBAL
@@ -23,8 +23,12 @@ class ChessBoard(Board):
         self.BLACK = 'b'
 
         # Instance
+        self.ui = ui
+        self.ui_ledger = move_ledger
         self.blocking_pieces = {}       # {blocking : (piece, dir)}
         self.reachable_positions = {}   # {move : [piece_1, piece_2], move_2 : [piece_1, piece_2]}
+
+        self.ui.bind("<Button-1>", self.on_player_click)
 
         # FLAGS
         self.pieces_placed = False
@@ -58,13 +62,18 @@ class ChessBoard(Board):
         if not force:
             if not piece.actual_moves_calculated:
                 piece.calculate_actual_moves(self.team_check[piece.team])
-            if destination not in piece.actual_moves():
+            if destination not in piece.get_actual_moves():
                 raise Exception(f"The {piece} cannot move to {destination}")
 
         piece.set_position(destination)
         piece.update_pieces_blocked(self)
         piece.update_pieces_unblocked(self)
         piece.update_flags_after_move()
+
+    def on_player_click(self, event_origin):
+        pass
+        # (x, y) = (event_origin.x / , event_origin.y / self.ui.get)
+
 
     # TODO Steal logic then remove
     # def __init_chess_game(self):
